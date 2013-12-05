@@ -1,0 +1,100 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{The need for team support in language workbenches}
+\author{Angelo Hulshout}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+
+\section{A sample case}
+A while ago, someone explained to me the following situation.
+
+In a large software application that controls production equipment, a key component is a workflow engine. This engine determines how workflows across the various machines is implemented.
+The application is maintained and extended continuously, supporting multiple variants of the production equipment and new processes or hardware supported by them.
+The workflow is maintained in a model, that resembles something like a flow chart or UML activity diagram and it is implemented using an available UML tool. From this model, code is generated such that
+\begin{itemize}
+\item	Each step of the workflow as invoked by the workflow engine is implemented as a C-function, and calls to these function are generated from the model
+\item	Inside each function device or function specific code is executed to perform the actual task
+\end{itemize}
+
+\section{The tool used}
+The UML tool that is used here stores the model in XML format, as a single file. This file, rather than the generated code is stored as part of the code in the software version control archives. The tool is somewhat outdated, and does not support features like model merging – it was set up as a single user modeling tool. Upgrading to a new version is cumbersome, because model conversion turns out not to work as expected out-of-the-box, so the development organization is stuck with the version they have been using for quite a few years.
+The way this is realized leads to the following problem.
+
+\section{The problem}
+Many engineers, sometimes up to 8, are making changes to this model, which is shared across variants –each for their own project related to a specific variant. Typically, changes take varying amounts of time and effort.
+Whenever an engineer has to deliver his model updates to the source control archive, and specifically to the trunk that is shared across all products and projects, the following needs to be done:
+\begin{itemize}
+\item The modeler has to retrieve the latest version of the model from the trunk
+\item On that version he has to re-implement the changes he made, performing basically a manual merge of his own changes and the ones made by others since he started
+\item After making changes, the model has to be retested before delivering to the trunk
+\end{itemize}
+The implications of this approach are obvious:
+\begin{itemize}
+\item Manual model merges eat into the development time gained by adopting a model driven approach – largely because of the effort involved, but also because it is an error prone process
+\item The model copy in the trunk has to be ‘locked’ during integration work by a single modeler, otherwise new changes would lead to endless integration cycles
+\item Locking the trunk version delays other projects who also need the model
+\item The shared model contains numerous steps that are specific to only a subset of the supported products, which complicates the (conditions in) the models
+\end{itemize}
+
+\section{Toward a solution}
+Of course, there are a number of things that can be done to resolve this problem. First of all, we could challenge the level of abstraction of the modeling language used. It seems to be fairly close to the code level, where model driven approaches typically aim for raising the level of abstraction. However, even if the level of abstraction is alright for this organisation, there's still the issue of concurrent editing and delivering to the central code repository that is awkward. A modeling tool that is used in an environment like this should provide featuers that make life easier on the modelers, like model modularisation, model merge support, semantics checkers and so on, in one form or another. Depending on the tool architecture some of these things may or may not be really needed, but bottom line, a tool should support the teams way of working.
+
+Given that the models are expressed in a (flow chart like) modeling language, this example organisation might have used a language workbench instead of an accidentally available tool, like they did now. This is why we ask participants of the LWC 2014 to show how their workbench of choice supports large models and modeling teams.
+
+\end{document}
